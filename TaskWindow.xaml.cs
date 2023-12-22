@@ -14,6 +14,13 @@ namespace KanbanApp
 
             Task = task;
             DataContext = this;
+            Loaded += TaskWindow_Loaded;
+        }
+
+        private void TaskWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            Width *= 1;
+            Height *= 1;
         }
 
         private void SubmitButton_Click(object sender, RoutedEventArgs e)

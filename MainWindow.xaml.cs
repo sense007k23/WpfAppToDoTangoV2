@@ -112,23 +112,7 @@ namespace KanbanApp
                 RefreshListViews();
             }
         }
-
-        private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ClickCount == 2)
-            {
-                if (sender is Border border && border.DataContext is Task task)
-                {
-                    var taskWindow = new TaskWindow(task);
-                    if (taskWindow.ShowDialog() == true)
-                    {
-                        taskRepository.UpdateTask(task);
-                        RefreshListViews();
-                    }
-                }
-            }
-        }
-
+        
         private void Task_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (sender is Task task)
@@ -181,5 +165,45 @@ namespace KanbanApp
                 RefreshListViews();
             }
         }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is Task task)
+            {
+                var taskWindow = new TaskWindow(task) { Owner = this };
+                if (taskWindow.ShowDialog() == true)
+                {
+                    taskRepository.UpdateTask(task);
+                    RefreshListViews();
+                }
+            }
+        }
+
+        private void Backlog_MouseEnter(object sender, MouseEventArgs e)
+        {
+            CreateTaskButton.Visibility = Visibility.Visible;
+            ShuffleTaskButton.Visibility = Visibility.Visible;
+        }
+
+        private void Backlog_MouseLeave(object sender, MouseEventArgs e)
+        {
+            CreateTaskButton.Visibility = Visibility.Collapsed;
+            ShuffleTaskButton.Visibility = Visibility.Collapsed;
+        }
+
+        private void CreateTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            var task = new Task();
+            var taskWindow = new TaskWindow(task) { Owner = this };
+            if (taskWindow.ShowDialog() == true)
+            {
+                task.Status = "Backlog";
+                Tasks.Add(task);
+                taskRepository.AddTask(task);
+                RefreshListViews();
+            }
+        }
+
+
     }
 }

@@ -2,12 +2,15 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Task Details" Height="300" Width="400">
-	<StackPanel Margin="10">
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Task Details" Height="600" Width="600" WindowStartupLocation="CenterOwner"
+        TextElement.FontSize="16" TextElement.FontWeight="Medium"
+        materialDesign:ShadowAssist.ShadowDepth="Depth3" >
+	<StackPanel Margin="20">
 		<Label Content="Task Name" />
-		<TextBox x:Name="TaskNameTextBox" Text="{Binding Task.Name}" />
+        <TextBox x:Name="TaskNameTextBox" Text="{Binding Task.Name}" materialDesign:HintAssist.Hint="Enter task name" />
 
-		<Label Content="Due Date" />
+            <Label Content="Due Date" />
 		<DatePicker x:Name="DueDateDatePicker" SelectedDate="{Binding Task.DueDate}" />
 
 		<Label Content="Due Time" />
@@ -29,6 +32,6 @@
 			<!-- Other priorities... -->
 		</ComboBox>
 
-		<Button Content="Submit" Click="SubmitButton_Click" />
-	</StackPanel>
+        <Button Content="Submit" Click="SubmitButton_Click" Width="100" HorizontalAlignment="Right" materialDesign:ButtonAssist.CornerRadius="20" />
+    </StackPanel>
 </Window>
