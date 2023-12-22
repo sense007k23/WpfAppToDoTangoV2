@@ -204,6 +204,39 @@ namespace KanbanApp
             }
         }
 
+        private void MoveToBacklogMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MoveTaskToBucket(sender, "Backlog");
+        }
+
+        private void MoveToDoingMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MoveTaskToBucket(sender, "Doing");
+        }
+
+        private void MoveToReviewMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MoveTaskToBucket(sender, "Review");
+        }
+
+        private void MoveToDoneMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MoveTaskToBucket(sender, "Done");
+        }
+
+        private void MoveTaskToBucket(object sender, string bucket)
+        {
+            if (sender is MenuItem menuItem && menuItem.DataContext is Task task)
+            {
+                Tasks.Remove(task);
+                taskRepository.DeleteTask(task);
+                task.Status = bucket;
+                Tasks.Add(task);
+                taskRepository.AddTask(task);
+                RefreshListViews();
+            }
+        }
+
 
     }
 }

@@ -38,6 +38,13 @@
                                 <TextBlock Text="{Binding Priority, StringFormat='Priority: {0}'}" />
                                 <Button Content="Edit" Click="EditButton_Click" Visibility="Collapsed" x:Name="EditButton" />
                             </StackPanel>
+                            <Border.ContextMenu>
+                                <ContextMenu>                                    
+                                    <MenuItem Header="Move to Doing" Click="MoveToDoingMenuItem_Click" />
+                                    <MenuItem Header="Move to Review" Click="MoveToReviewMenuItem_Click" />
+                                    <MenuItem Header="Move to Done" Click="MoveToDoneMenuItem_Click" />
+                                </ContextMenu>
+                            </Border.ContextMenu>
                         </Border>
                         <DataTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -67,6 +74,13 @@
                                 <TextBlock Text="{Binding Duration, StringFormat='Duration: {0}'}" />
                                 <TextBlock Text="{Binding Priority, StringFormat='Priority: {0}'}" />
                             </StackPanel>
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Move to Backlog" Click="MoveToBacklogMenuItem_Click" />                                    
+                                    <MenuItem Header="Move to Review" Click="MoveToReviewMenuItem_Click" />
+                                    <MenuItem Header="Move to Done" Click="MoveToDoneMenuItem_Click" />
+                                </ContextMenu>
+                            </Border.ContextMenu>
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -91,6 +105,13 @@
                                 <TextBlock Text="{Binding Duration, StringFormat='Duration: {0}'}" />
                                 <TextBlock Text="{Binding Priority, StringFormat='Priority: {0}'}" />
                             </StackPanel>
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Move to Backlog" Click="MoveToBacklogMenuItem_Click" />
+                                    <MenuItem Header="Move to Doing" Click="MoveToDoingMenuItem_Click" />                                    
+                                    <MenuItem Header="Move to Done" Click="MoveToDoneMenuItem_Click" />
+                                </ContextMenu>
+                            </Border.ContextMenu>
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -116,6 +137,13 @@
                                 <TextBlock Text="{Binding Priority, StringFormat='Priority: {0}'}" />
                                 <Button Content="Delete" Click="DeleteButton_Click" />
                             </StackPanel>
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Move to Backlog" Click="MoveToBacklogMenuItem_Click" />
+                                    <MenuItem Header="Move to Doing" Click="MoveToDoingMenuItem_Click" />
+                                    <MenuItem Header="Move to Review" Click="MoveToReviewMenuItem_Click" />                                   
+                                </ContextMenu>
+                            </Border.ContextMenu>
                         </Border>
                     </DataTemplate>
                 </ListView.ItemTemplate>
