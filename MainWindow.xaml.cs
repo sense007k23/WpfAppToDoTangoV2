@@ -29,18 +29,30 @@ namespace KanbanApp
 
             Tasks.CollectionChanged += Tasks_CollectionChanged;
 
-            timer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(1) };
-            timer.Tick += (s, e) =>
-            {
-                foreach (var task in Tasks)
-                {
-                    taskRepository.UpdateTask(task);
-                }
-                RefreshListViews();
-            };
+            // Calculate the time until the next minute
+            DateTime now = DateTime.Now;
+            TimeSpan timeUntilNextMinute = TimeSpan.FromMinutes(1) - TimeSpan.FromSeconds(now.Second);
+
+            // Create and start the timer
+            timer = new DispatcherTimer();
+            timer.Tick += Timer_Tick;
+            timer.Interval = timeUntilNextMinute;
             timer.Start();
 
             RefreshListViews();
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            // Update the tasks and refresh the ListViews
+            foreach (var task in Tasks)
+            {
+                taskRepository.UpdateTask(task);
+            }
+            RefreshListViews();
+
+            // Set the interval to one minute
+            timer.Interval = TimeSpan.FromMinutes(1);
         }
 
         private void RefreshListViews()
@@ -53,6 +65,18 @@ namespace KanbanApp
             Review.ItemsSource = Tasks.Where(t => t.Status == "Review").ToList();
             Done.ItemsSource = null;
             Done.ItemsSource = Tasks.Where(t => t.Status == "Done").ToList();
+
+            if (Tasks.Any(t => t.Status == "Backlog" && t.TimeRemaining.TotalMinutes < 0))
+            {
+                PlaySound();
+            }
+        }
+
+        private void PlaySound()
+        {
+            string path = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "notification1.wav");
+            var player = new System.Media.SoundPlayer(path);
+            player.Play();
         }
 
         private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
