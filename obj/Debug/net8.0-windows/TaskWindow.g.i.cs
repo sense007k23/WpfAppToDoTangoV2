@@ -109,7 +109,7 @@ namespace KanbanApp {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/WpfAppToDoTango;V1.0.0.0;component/taskwindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/WpfAppToDoTango;component/taskwindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\TaskWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

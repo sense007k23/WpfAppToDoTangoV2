@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\asengu02\\OneDrive - HARMAN\\P_E_R_S_O_N_A_L\\personalCodeRepo\\WpfAppToDoTango\\WpfAppToDoTango.csproj": {}
+    "C:\\Users\\asengu02\\OneDrive - HARMAN\\P_E_R_S_O_N_A_L\\personalCodeRepo\\WpfAppToDoTangoV2\\WpfAppToDoTango.csproj": {}
   },
   "projects": {
-    "C:\\Users\\asengu02\\OneDrive - HARMAN\\P_E_R_S_O_N_A_L\\personalCodeRepo\\WpfAppToDoTango\\WpfAppToDoTango.csproj": {
+    "C:\\Users\\asengu02\\OneDrive - HARMAN\\P_E_R_S_O_N_A_L\\personalCodeRepo\\WpfAppToDoTangoV2\\WpfAppToDoTango.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\asengu02\\OneDrive - HARMAN\\P_E_R_S_O_N_A_L\\personalCodeRepo\\WpfAppToDoTango\\WpfAppToDoTango.csproj",
+        "projectUniqueName": "C:\\Users\\asengu02\\OneDrive - HARMAN\\P_E_R_S_O_N_A_L\\personalCodeRepo\\WpfAppToDoTangoV2\\WpfAppToDoTango.csproj",
         "projectName": "WpfAppToDoTango",
-        "projectPath": "C:\\Users\\asengu02\\OneDrive - HARMAN\\P_E_R_S_O_N_A_L\\personalCodeRepo\\WpfAppToDoTango\\WpfAppToDoTango.csproj",
+        "projectPath": "C:\\Users\\asengu02\\OneDrive - HARMAN\\P_E_R_S_O_N_A_L\\personalCodeRepo\\WpfAppToDoTangoV2\\WpfAppToDoTango.csproj",
         "packagesPath": "C:\\Users\\asengu02\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\asengu02\\OneDrive - HARMAN\\P_E_R_S_O_N_A_L\\personalCodeRepo\\WpfAppToDoTango\\obj\\",
+        "outputPath": "C:\\Users\\asengu02\\OneDrive - HARMAN\\P_E_R_S_O_N_A_L\\personalCodeRepo\\WpfAppToDoTangoV2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\asengu02\\AppData\\Roaming\\NuGet\\NuGet.Config",
