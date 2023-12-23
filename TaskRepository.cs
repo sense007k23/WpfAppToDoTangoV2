@@ -14,16 +14,16 @@ namespace KanbanApp
             if (!File.Exists(DatabaseFileName))
             {
                 SQLiteConnection.CreateFile(DatabaseFileName);
+            }
 
-                using (var connection = new SQLiteConnection($"Data Source={DatabaseFileName};Version=3;"))
+            using (var connection = new SQLiteConnection($"Data Source={DatabaseFileName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = "CREATE TABLE IF NOT EXISTS Tasks (Name TEXT, DueDate TEXT, Duration TEXT, Priority TEXT, Status TEXT, ElapsedTime TEXT)";
+                using (var command = new SQLiteCommand(sql, connection))
                 {
-                    connection.Open();
-
-                    string sql = "CREATE TABLE Tasks (Name TEXT, DueDate TEXT, Duration TEXT, Priority TEXT, Status TEXT)";
-                    using (var command = new SQLiteCommand(sql, connection))
-                    {
-                        command.ExecuteNonQuery();
-                    }
+                    command.ExecuteNonQuery();
                 }
             }
         }
@@ -49,7 +49,8 @@ namespace KanbanApp
                                 DueDate = DateTime.Parse((string)reader["DueDate"]),
                                 Duration = (string)reader["Duration"],
                                 Priority = (string)reader["Priority"],
-                                Status = (string)reader["Status"]
+                                Status = (string)reader["Status"],
+                                ElapsedTime = TimeSpan.Parse((string)reader["ElapsedTime"])
                             });
                         }
                     }
@@ -65,7 +66,7 @@ namespace KanbanApp
             {
                 connection.Open();
 
-                string sql = $"INSERT INTO Tasks (Name, DueDate, Duration, Priority, Status) VALUES ('{task.Name}', '{task.DueDate}', '{task.Duration}', '{task.Priority}', '{task.Status}')";
+                string sql = $"INSERT INTO Tasks (Name, DueDate, Duration, Priority, Status, ElapsedTime) VALUES ('{task.Name}', '{task.DueDate}', '{task.Duration}', '{task.Priority}', '{task.Status}', '{task.ElapsedTime}')";
                 using (var command = new SQLiteCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();
@@ -79,7 +80,7 @@ namespace KanbanApp
             {
                 connection.Open();
 
-                string sql = $"UPDATE Tasks SET DueDate = '{task.DueDate}', Duration = '{task.Duration}', Priority = '{task.Priority}', Status = '{task.Status}' WHERE Name = '{task.Name}'";
+                string sql = $"UPDATE Tasks SET DueDate = '{task.DueDate}', Duration = '{task.Duration}', Priority = '{task.Priority}', Status = '{task.Status}', ElapsedTime = '{task.ElapsedTime}' WHERE Name = '{task.Name}'";
                 using (var command = new SQLiteCommand(sql, connection))
                 {
                     command.ExecuteNonQuery();

@@ -6,12 +6,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
+
 namespace KanbanApp
 {
     public partial class MainWindow : Window
     {
         private TaskRepository taskRepository;
         private DispatcherTimer timer;
+        private FullScreenModal fullScreenModal;
 
         public ObservableCollection<Task> Tasks { get; set; }
 
@@ -70,11 +72,40 @@ namespace KanbanApp
             {
                 PlaySound();
             }
+
+            var doingTasks = Tasks.Where(t => t.Status == "Doing").ToList();
+            Doing.ItemsSource = null;
+            Doing.ItemsSource = doingTasks;
+
+            if (doingTasks.Count == 0)
+            {
+                PlaySound_DoingBucketEmpty();
+            }
+
+                           
+
+            if (doingTasks.Count == 0 || doingTasks.Any(t => t.Stopwatch.Elapsed > t.DurationTimeSpan))
+            {
+                PlaySound_DoingBucketEmpty();
+                if (fullScreenModal == null || !fullScreenModal.IsVisible)
+                {
+                    fullScreenModal = new FullScreenModal();
+                    fullScreenModal.Show();
+                }
+            }
+
         }
 
         private void PlaySound()
         {
             string path = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "notification1.wav");
+            var player = new System.Media.SoundPlayer(path);
+            player.Play();
+        }
+
+        private void PlaySound_DoingBucketEmpty()
+        {
+            string path = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "notification2.wav");
             var player = new System.Media.SoundPlayer(path);
             player.Play();
         }
@@ -166,9 +197,9 @@ namespace KanbanApp
             }
         }
 
-        private void EditButton_Click(object sender, RoutedEventArgs e)
+        private void EditMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.DataContext is Task task)
+            if (sender is MenuItem menuItem && menuItem.DataContext is Task task)
             {
                 var taskWindow = new TaskWindow(task) { Owner = this };
                 if (taskWindow.ShowDialog() == true)
@@ -231,6 +262,35 @@ namespace KanbanApp
                 Tasks.Remove(task);
                 taskRepository.DeleteTask(task);
                 task.Status = bucket;
+                if (bucket == "Doing" && !task.Stopwatch.IsRunning)
+                {
+                    task.Stopwatch.Start();
+                }
+                else if (bucket != "Doing" && task.Stopwatch.IsRunning)
+                {
+                    task.Stopwatch.Stop();
+                    task.ElapsedTime += task.Stopwatch.Elapsed;
+                    //task.Stopwatch.Reset();
+                }
+                Tasks.Add(task);
+                taskRepository.AddTask(task);
+                RefreshListViews();
+            }
+        }
+
+        private void QuickAddTaskMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            string taskName = InputBox.Show();
+            if (!string.IsNullOrEmpty(taskName))
+            {
+                var task = new Task
+                {
+                    Name = taskName,
+                    DueDate = DateTime.Now.AddMinutes(15),
+                    Duration = "2 minutes",
+                    Priority = "P1",
+                    Status = "Backlog"
+                };
                 Tasks.Add(task);
                 taskRepository.AddTask(task);
                 RefreshListViews();

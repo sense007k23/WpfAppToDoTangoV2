@@ -27,6 +27,11 @@
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     </Style>
                 </ListView.ItemContainerStyle>
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Quick Add Task" Click="QuickAddTaskMenuItem_Click" />
+                    </ContextMenu>
+                </ListView.ContextMenu>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border BorderBrush="Black" BorderThickness="1" Padding="10" Margin="5" Background="{Binding TimeRemaining, Converter={StaticResource TimeRemainingToBrushConverter}}">
@@ -35,22 +40,17 @@
                                 <TextBlock Text="{Binding DueDate, StringFormat='Due on: {0:dd MMMM hh:mm tt}'}" />
                                 <TextBlock Text="{Binding TimeDue}" />
                                 <TextBlock Text="{Binding Duration, StringFormat='Duration: {0}'}" />
-                                <TextBlock Text="{Binding Priority, StringFormat='Priority: {0}'}" />
-                                <Button Content="Edit" Click="EditButton_Click" Visibility="Collapsed" x:Name="EditButton" />
+                                <TextBlock Text="{Binding Priority, StringFormat='Priority: {0}'}" />                                
                             </StackPanel>
                             <Border.ContextMenu>
                                 <ContextMenu>                                    
                                     <MenuItem Header="Move to Doing" Click="MoveToDoingMenuItem_Click" />
                                     <MenuItem Header="Move to Review" Click="MoveToReviewMenuItem_Click" />
                                     <MenuItem Header="Move to Done" Click="MoveToDoneMenuItem_Click" />
+                                    <MenuItem Header="Edit" Click="EditMenuItem_Click" />                                    
                                 </ContextMenu>
                             </Border.ContextMenu>
-                        </Border>
-                        <DataTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="EditButton" Property="Visibility" Value="Visible" />
-                            </Trigger>
-                        </DataTemplate.Triggers>
+                        </Border>                        
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -73,6 +73,7 @@
                                 <TextBlock Text="{Binding TimeDue}" />
                                 <TextBlock Text="{Binding Duration, StringFormat='Duration: {0}'}" />
                                 <TextBlock Text="{Binding Priority, StringFormat='Priority: {0}'}" />
+                                <TextBlock Text="{Binding ElapsedFormatted}" />
                             </StackPanel>
                             <Border.ContextMenu>
                                 <ContextMenu>

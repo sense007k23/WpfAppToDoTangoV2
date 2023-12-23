@@ -1,5 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Windows.Threading;
+
 
 namespace KanbanApp
 {
@@ -118,5 +121,36 @@ namespace KanbanApp
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public Stopwatch Stopwatch { get; } = new Stopwatch();
+
+        public string ElapsedFormatted
+        {
+            get
+            {
+                var totalElapsedTime = ElapsedTime;
+                if (Stopwatch.IsRunning)
+                {
+                    totalElapsedTime += Stopwatch.Elapsed;
+                }
+                return totalElapsedTime.ToString(@"hh\:mm");
+            }
+        }
+
+        public TimeSpan ElapsedTime { get; set; }
+
+        public TimeSpan DurationTimeSpan
+        {
+            get
+            {
+                // Parse the Duration string to get the number of minutes
+                if (int.TryParse(Duration.Split(' ')[0], out int minutes))
+                {
+                    return TimeSpan.FromMinutes(minutes);
+                }
+                return TimeSpan.Zero;
+            }
+        }
+
     }
 }
