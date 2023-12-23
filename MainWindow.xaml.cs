@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.IO;
 
 
 namespace KanbanApp
@@ -93,6 +95,25 @@ namespace KanbanApp
                     fullScreenModal.Show();
                 }
             }
+
+            [DllImport("user32.dll", SetLastError = true)]
+            static extern bool LockWorkStation();
+
+            //If Stop watch is not running.
+            if (doingTasks.Count == 0 || doingTasks.All(t => !t.Stopwatch.IsRunning))
+            {
+                PlaySound_DoingBucketEmpty();
+                if (fullScreenModal == null || !fullScreenModal.IsVisible)
+                {
+                    fullScreenModal = new FullScreenModal();
+                    fullScreenModal.Show();
+                }
+                //System.Windows.MessageBox.Show("No Active Task Running.");
+                //LockWorkStation();
+            }
+
+            CreateTasksFromCsv();
+
 
         }
 
@@ -294,6 +315,33 @@ namespace KanbanApp
                 Tasks.Add(task);
                 taskRepository.AddTask(task);
                 RefreshListViews();
+            }
+        }
+
+        private void CreateTasksFromCsv()
+        {
+            var csvLines = File.ReadAllLines("recurringtask.csv");
+            foreach (var line in csvLines.Skip(1))  // Skip the header line
+            {
+                var fields = line.Split(',');
+                var dueDate = DateTime.Today.Add(DateTime.Parse(fields[1].Trim()).TimeOfDay);
+                if (dueDate >= DateTime.Now && dueDate <= DateTime.Now.AddMinutes(120))
+                {
+                    var taskName = fields[0].Trim() + "_" + DateTime.Today.ToString("dd_MM_yyyy");
+                    if (!Tasks.Any(t => t.Name == taskName))
+                    {
+                        var task = new Task
+                        {
+                            Name = taskName,
+                            DueDate = dueDate,
+                            Duration = fields[2].Trim(),
+                            Priority = fields[3].Trim(),
+                            Status = "Backlog"
+                        };
+                        Tasks.Add(task);
+                        taskRepository.AddTask(task);
+                    }
+                }
             }
         }
 
