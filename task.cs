@@ -86,7 +86,7 @@ namespace KanbanApp
                     }
                     else if (timeSpan.TotalDays < 1)
                     {
-                        return $"{timeSpan.Hours} hours due";
+                        return $"{timeSpan.Hours} hours and {timeSpan.Minutes % 60} minutes due";
                     }
                     else
                     {

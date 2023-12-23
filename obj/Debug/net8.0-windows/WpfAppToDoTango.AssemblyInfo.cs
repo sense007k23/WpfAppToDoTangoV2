@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WpfAppToDoTango")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+68a36ce261db7469fd70f6ac9ec32a6791657937")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d925aa961916675c9885546255d6b0b0669ddff6")]
 [assembly: System.Reflection.AssemblyProductAttribute("WpfAppToDoTango")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WpfAppToDoTango")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -111,3 +111,9 @@ C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoT
 C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\obj\Debug\net8.0-windows\WpfAppToDoTango.pdb
 C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\obj\Debug\net8.0-windows\WpfAppToDoTango.genruntimeconfig.cache
 C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\obj\Debug\net8.0-windows\ref\WpfAppToDoTango.dll
+C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\bin\Debug\net8.0-windows\MaterialDesignColors.dll
+C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\bin\Debug\net8.0-windows\MaterialDesignThemes.Wpf.dll
+C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\bin\Debug\net8.0-windows\Microsoft.Xaml.Behaviors.dll
+C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\obj\Debug\net8.0-windows\App.baml
+C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\obj\Debug\net8.0-windows\FullScreenModal.baml
+C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\obj\Debug\net8.0-windows\FullScreenModal.g.cs
