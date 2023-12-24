@@ -200,7 +200,10 @@ namespace KanbanApp
             if (sender is Task task)
             {
                 taskRepository.UpdateTask(task);
-                RefreshListViews();
+                if (e.PropertyName != "ElapsedFormatted")
+                {
+                    RefreshListViews();
+                }
             }
         }
 
@@ -415,6 +418,21 @@ namespace KanbanApp
         private string duration;
         private string priority;
         private string status;
+        private string elapsedFormatted;
+        private DispatcherTimer timer;
+
+        public Task()
+        {
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            ElapsedFormatted = Stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
+        }
 
         public string Name
         {
@@ -517,6 +535,19 @@ namespace KanbanApp
             }
         }
 
+        public string ElapsedFormatted
+        {
+            get { return elapsedFormatted; }
+            set
+            {
+                if (elapsedFormatted != value)
+                {
+                    elapsedFormatted = value;
+                    OnPropertyChanged("ElapsedFormatted");
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)
@@ -525,19 +556,6 @@ namespace KanbanApp
         }
 
         public Stopwatch Stopwatch { get; } = new Stopwatch();
-
-        public string ElapsedFormatted
-        {
-            get
-            {
-                var totalElapsedTime = ElapsedTime;
-                if (Stopwatch.IsRunning)
-                {
-                    totalElapsedTime += Stopwatch.Elapsed;
-                }
-                return totalElapsedTime.ToString(@"hh\:mm");
-            }
-        }
 
         public TimeSpan ElapsedTime { get; set; }
 
@@ -563,7 +581,6 @@ namespace KanbanApp
                 return TimeSpan.Zero;
             }
         }
-
     }
 
     /*********************************************************************/

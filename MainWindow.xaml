@@ -73,7 +73,7 @@
                                 <TextBlock Text="{Binding TimeDue}" />
                                 <TextBlock Text="{Binding Duration, StringFormat='Duration: {0}'}" />
                                 <TextBlock Text="{Binding Priority, StringFormat='Priority: {0}'}" />
-                                <TextBlock Text="{Binding ElapsedFormatted}" />
+                                <TextBox Text="{Binding ElapsedFormatted, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="YellowGreen" />
                             </StackPanel>
                             <Border.ContextMenu>
                                 <ContextMenu>
