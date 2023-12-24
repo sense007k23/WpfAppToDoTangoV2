@@ -7,7 +7,7 @@
     <Window.Resources>
         <local:TimeRemainingToBrushConverter x:Key="TimeRemainingToBrushConverter" />
     </Window.Resources>
-    <Grid ShowGridLines="True" >
+    <Grid ShowGridLines="True" >        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="1*" />
@@ -16,7 +16,7 @@
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Background="Gray" Width="15" />
+        <Border Grid.Column="0" Background="Gray" Width="15" />        
         <DockPanel Grid.Column="1" Margin="10" MouseEnter="Backlog_MouseEnter" MouseLeave="Backlog_MouseLeave">
             <Label Content="Backlog" Background="LightBlue" Padding="10" DockPanel.Dock="Top" />
             <Button Content="Create Task" Click="CreateTaskButton_Click" Visibility="Collapsed" x:Name="CreateTaskButton" DockPanel.Dock="Bottom" Width="200" materialDesign:ButtonAssist.CornerRadius="20" />
@@ -29,7 +29,7 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Quick Add Task" Click="QuickAddTaskMenuItem_Click" />
+                        <MenuItem Header="Quick Add Task" Click="QuickAddTaskMenuItem_Click" />                        
                     </ContextMenu>
                 </ListView.ContextMenu>
                 <ListView.ItemTemplate>
@@ -52,7 +52,7 @@
                             </Border.ContextMenu>
                         </Border>                        
                     </DataTemplate>
-                </ListView.ItemTemplate>
+                </ListView.ItemTemplate>                
             </ListView>
         </DockPanel>
 
@@ -151,5 +151,8 @@
             </ListView>
         </DockPanel>
         <Border Grid.Column="5" Background="Gray" Width="15" />
+        <TextBlock x:Name="CountdownTextBlock" HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="60" Grid.ColumnSpan="6" Foreground="LightGray" Margin="0,0,30,0"/>
     </Grid>
 </Window>
+    
+    

@@ -7,6 +7,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.IO;
+using System.Net.Sockets;
+using System.Threading.Tasks;
+using System.Globalization;
+using System.Windows.Data;
+using System.Windows.Media;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Data.SQLite;
 
 
 namespace KanbanApp
@@ -15,6 +23,7 @@ namespace KanbanApp
     {
         private TaskRepository taskRepository;
         private DispatcherTimer timer;
+        private readonly DispatcherTimer _timer;
         private FullScreenModal fullScreenModal;
 
         public ObservableCollection<Task> Tasks { get; set; }
@@ -43,7 +52,22 @@ namespace KanbanApp
             timer.Interval = timeUntilNextMinute;
             timer.Start();
 
+
+            _timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            _timer.Tick += Timer_Tick_clock;
+            _timer.Start();
+
+
             RefreshListViews();
+        }
+
+        private void Timer_Tick_clock(object sender, EventArgs e)
+        {
+            var timeSinceMidnight = DateTime.Now - DateTime.Today;
+            CountdownTextBlock.Text = timeSinceMidnight.ToString(@"hh\:mm\:ss");
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -61,8 +85,14 @@ namespace KanbanApp
 
         private void RefreshListViews()
         {
+
+          
             Backlog.ItemsSource = null;
-            Backlog.ItemsSource = Tasks.Where(t => t.Status == "Backlog").ToList();
+            Backlog.ItemsSource = Tasks
+            .Where(t => t.Status == "Backlog" && t.DueDate.HasValue)
+            .OrderBy(t => t.DueDate.Value)
+            .ThenBy(t => t.Priority)
+            .ToList();
             Doing.ItemsSource = null;
             Doing.ItemsSource = Tasks.Where(t => t.Status == "Doing").ToList();
             Review.ItemsSource = null;
@@ -343,8 +373,347 @@ namespace KanbanApp
                     }
                 }
             }
-        }
+        }    
 
 
     }
+
+
+    public class TimeRemainingToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is TimeSpan timeRemaining)
+            {
+                if (timeRemaining.TotalMinutes < 15)
+                {
+                    return Brushes.LightCoral;
+                }
+                else
+                {
+                    return Brushes.Transparent;
+                }
+            }
+            else
+            {
+                return Brushes.Transparent;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /******************* Task Class **************************************/
+
+    public class Task : INotifyPropertyChanged
+    {
+        private string name;
+        private DateTime? dueDate;
+        private string duration;
+        private string priority;
+        private string status;
+
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                name = value;
+                OnPropertyChanged("Name");
+            }
+        }
+
+        public DateTime? DueDate
+        {
+            get { return dueDate; }
+            set
+            {
+                dueDate = value;
+                OnPropertyChanged("DueDate");
+                OnPropertyChanged("TimeDue");
+            }
+        }
+
+        public string Duration
+        {
+            get { return duration; }
+            set
+            {
+                duration = value;
+                OnPropertyChanged("Duration");
+            }
+        }
+
+        public string Priority
+        {
+            get { return priority; }
+            set
+            {
+                priority = value;
+                OnPropertyChanged("Priority");
+            }
+        }
+
+        public string Status
+        {
+            get { return status; }
+            set
+            {
+                status = value;
+                OnPropertyChanged("Status");
+            }
+        }
+
+        public string TimeDue
+        {
+            get
+            {
+                if (DueDate.HasValue)
+                {
+                    var timeSpan = DueDate.Value - DateTime.Now;
+                    if (timeSpan.TotalMinutes < 0)
+                    {
+                        return $"Overdue by {-timeSpan.Hours} hours and {-timeSpan.Minutes % 60} minutes";
+                    }
+                    else if (timeSpan.TotalMinutes < 1)
+                    {
+                        return "Due now";
+                    }
+                    else if (timeSpan.TotalHours < 1)
+                    {
+                        return $"{timeSpan.Minutes} minutes due";
+                    }
+                    else if (timeSpan.TotalDays < 1)
+                    {
+                        return $"{timeSpan.Hours} hours and {timeSpan.Minutes % 60} minutes due";
+                    }
+                    else
+                    {
+                        return $"{timeSpan.Days} days due";
+                    }
+                }
+                else
+                {
+                    return "No due date";
+                }
+            }
+        }
+
+        public TimeSpan TimeRemaining
+        {
+            get
+            {
+                if (DueDate.HasValue)
+                {
+                    return DueDate.Value - DateTime.Now;
+                }
+                else
+                {
+                    return TimeSpan.MaxValue;
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public Stopwatch Stopwatch { get; } = new Stopwatch();
+
+        public string ElapsedFormatted
+        {
+            get
+            {
+                var totalElapsedTime = ElapsedTime;
+                if (Stopwatch.IsRunning)
+                {
+                    totalElapsedTime += Stopwatch.Elapsed;
+                }
+                return totalElapsedTime.ToString(@"hh\:mm");
+            }
+        }
+
+        public TimeSpan ElapsedTime { get; set; }
+
+        public TimeSpan DurationTimeSpan
+        {
+            get
+            {
+                var parts = Duration.Split(' ');
+                if (parts.Length >= 2)
+                {
+                    if (int.TryParse(parts[0], out int value))
+                    {
+                        if (parts[1].StartsWith("hour"))
+                        {
+                            return TimeSpan.FromHours(value);
+                        }
+                        else if (parts[1].StartsWith("minute"))
+                        {
+                            return TimeSpan.FromMinutes(value);
+                        }
+                    }
+                }
+                return TimeSpan.Zero;
+            }
+        }
+
+    }
+
+    /*********************************************************************/
+
+
+    /************** Task Repository Class ***********************************/
+
+    public class TaskRepository
+    {
+        private const string DatabaseFileName = "Tasks.db";
+
+        public TaskRepository()
+        {
+            if (!File.Exists(DatabaseFileName))
+            {
+                SQLiteConnection.CreateFile(DatabaseFileName);
+            }
+
+            using (var connection = new SQLiteConnection($"Data Source={DatabaseFileName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = "CREATE TABLE IF NOT EXISTS Tasks (Name TEXT, DueDate TEXT, Duration TEXT, Priority TEXT, Status TEXT, ElapsedTime TEXT)";
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public List<Task> GetAllTasks()
+        {
+            var tasks = new List<Task>();
+
+            using (var connection = new SQLiteConnection($"Data Source={DatabaseFileName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = "SELECT * FROM Tasks";
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            tasks.Add(new Task
+                            {
+                                Name = (string)reader["Name"],
+                                DueDate = DateTime.Parse((string)reader["DueDate"]),
+                                Duration = (string)reader["Duration"],
+                                Priority = (string)reader["Priority"],
+                                Status = (string)reader["Status"],
+                                ElapsedTime = TimeSpan.Parse((string)reader["ElapsedTime"])
+                            });
+                        }
+                    }
+                }
+            }
+
+            return tasks;
+        }
+
+        public void AddTask(Task task)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={DatabaseFileName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"INSERT INTO Tasks (Name, DueDate, Duration, Priority, Status, ElapsedTime) VALUES ('{task.Name}', '{task.DueDate}', '{task.Duration}', '{task.Priority}', '{task.Status}', '{task.ElapsedTime}')";
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void UpdateTask(Task task)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={DatabaseFileName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"UPDATE Tasks SET DueDate = '{task.DueDate}', Duration = '{task.Duration}', Priority = '{task.Priority}', Status = '{task.Status}', ElapsedTime = '{task.ElapsedTime}' WHERE Name = '{task.Name}'";
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteTask(Task task)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={DatabaseFileName};Version=3;"))
+            {
+                connection.Open();
+
+                string sql = $"DELETE FROM Tasks WHERE Name = '{task.Name}'";
+                using (var command = new SQLiteCommand(sql, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+    }
+
+    /************************************************************************/
+
+    /********************** Input Box ****************************************/
+
+    public static class InputBox
+    {
+        public static string Show()
+        {
+            var inputBox = new Window()
+            {
+                Width = 500,
+                Height = 150,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+
+            var textBox = new TextBox
+            {
+                Margin = new Thickness(0),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+            textBox.KeyDown += (sender, e) =>
+            {
+                if (e.Key == Key.Enter)
+                {
+                    inputBox.Close();
+                }
+            };
+
+            inputBox.Content = textBox;
+            inputBox.ShowDialog();
+
+            return textBox.Text;
+        }
+    }
+
+
+
+    /**************************************************************************/
+
+
+
+
+
+
+
+
 }
