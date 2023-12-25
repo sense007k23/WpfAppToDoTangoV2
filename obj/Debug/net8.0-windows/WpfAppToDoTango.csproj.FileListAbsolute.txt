@@ -117,3 +117,4 @@ C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoT
 C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\obj\Debug\net8.0-windows\App.baml
 C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\obj\Debug\net8.0-windows\FullScreenModal.baml
 C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\obj\Debug\net8.0-windows\FullScreenModal.g.cs
+C:\Users\asengu02\OneDrive - HARMAN\P_E_R_S_O_N_A_L\personalCodeRepo\WpfAppToDoTangoV2\bin\Debug\net8.0-windows\Microsoft.Toolkit.Uwp.Notifications.dll

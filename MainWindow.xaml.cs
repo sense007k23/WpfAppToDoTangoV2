@@ -419,6 +419,15 @@ namespace KanbanApp
             }
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var pinWindow = new PinWindow();
+            if (pinWindow.ShowDialog() != true)
+            {
+                e.Cancel = true;
+            }
+        }
+
 
 
     }

@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:KanbanApp"
-        Title="ToDo Tango" Height="450" Width="800" TextElement.FontSize="16" TextElement.FontWeight="Medium" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+        Title="ToDo Tango" Height="450" Width="800" TextElement.FontSize="16" TextElement.FontWeight="Medium" materialDesign:ShadowAssist.ShadowDepth="Depth3" Closing="Window_Closing">
+        
     <Window.Resources>
         <local:TimeRemainingToBrushConverter x:Key="TimeRemainingToBrushConverter" />
     </Window.Resources>
