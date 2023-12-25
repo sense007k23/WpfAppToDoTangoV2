@@ -29,7 +29,9 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Quick Add Task" Click="QuickAddTaskMenuItem_Click" />                        
+                        <MenuItem Header="Quick Add Task" Click="QuickAddTaskMenuItem_Click" />
+                        <MenuItem Header="Create Tasks From Inbox" Click="CreateTasksFromInboxMenuItem_Click" />
+                        <MenuItem Header="Edit Tasks Inbox" Click="EditTasksInboxMenuItem_Click" />
                     </ContextMenu>
                 </ListView.ContextMenu>
                 <ListView.ItemTemplate>

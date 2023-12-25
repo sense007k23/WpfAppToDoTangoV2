@@ -15,6 +15,8 @@ using System.Windows.Media;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Data.SQLite;
+using Microsoft.Toolkit.Uwp.Notifications;
+using System.Security.Cryptography.X509Certificates;
 
 
 namespace KanbanApp
@@ -100,9 +102,23 @@ namespace KanbanApp
             Done.ItemsSource = null;
             Done.ItemsSource = Tasks.Where(t => t.Status == "Done").ToList();
 
-            if (Tasks.Any(t => t.Status == "Backlog" && t.TimeRemaining.TotalMinutes < 0))
+            var dueTasks = Tasks.Where(t => t.Status == "Backlog" && t.TimeRemaining.TotalMinutes < 0).ToList();
+            if (dueTasks.Any())
             {
-                PlaySound();
+                foreach (var task in dueTasks)
+                {
+                    new ToastContentBuilder()
+                    .AddArgument("action", "Alert In Backlog")
+                    .AddText("Task Reminder", hintStyle: AdaptiveTextStyle.Header) // This is the header
+                    .AddText($"Task {task.Name} Due in Backlog!!!!")
+                    .AddAudio(new ToastAudio()
+                    {
+                        Src = new Uri("ms-winsoundevent:Notification.Looping.Alarm2")
+                    })
+                    .AddHeader("1", "Alert", "Task Reminder!!!!!")
+                    .AddText($"Task {task.Name} Due in Backlog...")
+                    .Show();
+                }
             }
 
             var doingTasks = Tasks.Where(t => t.Status == "Doing").ToList();
@@ -111,38 +127,43 @@ namespace KanbanApp
 
             if (doingTasks.Count == 0)
             {
-                PlaySound_DoingBucketEmpty();
+                //PlaySound_DoingBucketEmpty();
             }
 
                            
 
             if (doingTasks.Count == 0 || doingTasks.Any(t => t.Stopwatch.Elapsed > t.DurationTimeSpan))
             {
-                PlaySound_DoingBucketEmpty();
-                if (fullScreenModal == null || !fullScreenModal.IsVisible)
-                {
-                    fullScreenModal = new FullScreenModal();
-                    fullScreenModal.Show();
-                }
+                //
             }
 
             [DllImport("user32.dll", SetLastError = true)]
             static extern bool LockWorkStation();
 
+           
+
             //If Stop watch is not running.
             if (doingTasks.Count == 0 || doingTasks.All(t => !t.Stopwatch.IsRunning))
             {
-                PlaySound_DoingBucketEmpty();
-                if (fullScreenModal == null || !fullScreenModal.IsVisible)
+                //PlaySound_DoingBucketEmpty();
+                new ToastContentBuilder()
+                .AddArgument("action", "viewItemsDueToday")
+                .AddText("Task Reminder", hintStyle: AdaptiveTextStyle.Header) // This is the header
+                .AddText("No Active Tasks!!!!")
+                .AddAudio(new ToastAudio()
                 {
-                    fullScreenModal = new FullScreenModal();
-                    fullScreenModal.Show();
-                }
+                    Src = new Uri("ms-winsoundevent:Notification.Looping.Alarm2")
+                })
+                .AddHeader("1","Alert","Task Reminder!!!!!")
+                .AddText("Schedule Some Tasks From Backlog...")
+                .Show();
+
+
+
+
                 //System.Windows.MessageBox.Show("No Active Task Running.");
                 //LockWorkStation();
             }
-
-            CreateTasksFromCsv();
 
 
         }
@@ -351,32 +372,43 @@ namespace KanbanApp
             }
         }
 
-        private void CreateTasksFromCsv()
+
+        private void CreateTasksFromInboxMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var csvLines = File.ReadAllLines("recurringtask.csv");
+            CreateTasksFromInbox();
+        }
+
+        private void CreateTasksFromInbox()
+        {
+            var csvLines = File.ReadAllLines("taskInbox.csv");
             foreach (var line in csvLines.Skip(1))  // Skip the header line
             {
                 var fields = line.Split(',');
-                var dueDate = DateTime.Today.Add(DateTime.Parse(fields[1].Trim()).TimeOfDay);
-                if (dueDate >= DateTime.Now && dueDate <= DateTime.Now.AddMinutes(120))
+                var taskName = fields[0].Trim();
+                var dueDate = DateTime.ParseExact(fields[1].Trim(), "dd-MM-yyyy h:mm tt", CultureInfo.InvariantCulture);
+
+                if (!Tasks.Any(t => t.Name == taskName && t.DueDate == dueDate))
                 {
-                    var taskName = fields[0].Trim() + "_" + DateTime.Today.ToString("dd_MM_yyyy");
-                    if (!Tasks.Any(t => t.Name == taskName))
+                    var task = new Task
                     {
-                        var task = new Task
-                        {
-                            Name = taskName,
-                            DueDate = dueDate,
-                            Duration = fields[2].Trim(),
-                            Priority = fields[3].Trim(),
-                            Status = "Backlog"
-                        };
-                        Tasks.Add(task);
-                        taskRepository.AddTask(task);
-                    }
+                        Name = taskName,
+                        DueDate = dueDate,
+                        Priority = fields[2].Trim(),
+                        Duration = fields[3].Trim().Replace("m", " minutes").Replace("h", " hours"),
+                        Status = "Backlog"
+                    };
+                    Tasks.Add(task);
+                    taskRepository.AddTask(task);
                 }
             }
-        }    
+            RefreshListViews();
+        }
+
+        private void EditTasksInboxMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("excel.exe", "taskInbox.csv") { UseShellExecute = true });
+        }
+
 
 
     }
