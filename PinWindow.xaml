@@ -1,9 +1,10 @@
 <Window x:Class="KanbanApp.PinWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Enter PIN" Height="150" Width="300">
+        Title="Enter PIN" Height="150" Width="300"
+        Loaded="Window_Loaded">
     <StackPanel Margin="10">
-        <PasswordBox x:Name="PinPasswordBox" KeyDown="PinPasswordBox_KeyDown" />
+        <PasswordBox x:Name="PinPasswordBox" KeyDown="PinPasswordBox_KeyDown"/>
         <Button Content="OK" Click="OkButton_Click" />
     </StackPanel>
 </Window>

@@ -29,5 +29,10 @@ namespace KanbanApp
                 OkButton_Click(sender, e);
             }
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            PinPasswordBox.Focus();
+        }
     }
 }
