@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:KanbanApp"
-        Title="Kanban Board" Height="450" Width="800" TextElement.FontSize="16" TextElement.FontWeight="Medium" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+        Title="ToDo Tango" Height="450" Width="800" TextElement.FontSize="16" TextElement.FontWeight="Medium" materialDesign:ShadowAssist.ShadowDepth="Depth3">
     <Window.Resources>
         <local:TimeRemainingToBrushConverter x:Key="TimeRemainingToBrushConverter" />
     </Window.Resources>
@@ -49,7 +49,8 @@
                                     <MenuItem Header="Move to Doing" Click="MoveToDoingMenuItem_Click" />
                                     <MenuItem Header="Move to Review" Click="MoveToReviewMenuItem_Click" />
                                     <MenuItem Header="Move to Done" Click="MoveToDoneMenuItem_Click" />
-                                    <MenuItem Header="Edit" Click="EditMenuItem_Click" />                                    
+                                    <MenuItem Header="Edit" Click="EditMenuItem_Click" />
+                                    <MenuItem Header="Increase Due Date by 15 Min" Click="IncreaseDueDateMenuItem_Click" />
                                 </ContextMenu>
                             </Border.ContextMenu>
                         </Border>                        
@@ -138,7 +139,18 @@
                                 <TextBlock Text="{Binding TimeDue}" />
                                 <TextBlock Text="{Binding Duration, StringFormat='Duration: {0}'}" />
                                 <TextBlock Text="{Binding Priority, StringFormat='Priority: {0}'}" />
-                                <Button Content="Delete" Click="DeleteButton_Click" />
+                                <Button Content="Delete" Click="DeleteButton_Click" x:Name="DeleteButton">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsMouseOver}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
                             </StackPanel>
                             <Border.ContextMenu>
                                 <ContextMenu>

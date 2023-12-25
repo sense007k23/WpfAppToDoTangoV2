@@ -409,6 +409,16 @@ namespace KanbanApp
             Process.Start(new ProcessStartInfo("excel.exe", "taskInbox.csv") { UseShellExecute = true });
         }
 
+        private void IncreaseDueDateMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem menuItem && menuItem.DataContext is Task task)
+            {
+                task.DueDate = task.DueDate?.AddMinutes(15);
+                taskRepository.UpdateTask(task);
+                RefreshListViews();
+            }
+        }
+
 
 
     }
